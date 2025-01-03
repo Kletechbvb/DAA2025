@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithmic Water Distribution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: #030303;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0066ff, #00ccff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .nav-items {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .nav-items a:hover, .nav-items a.active {
+            opacity: 1;
+            color: #00ccff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            max-width: 1000px;
+        }
+
+        .subtitle {
+            color: #00ccff;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeInUp 1s forwards;
+        }
+
+        .title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s forwards 0.3s;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s forwards 0.6s;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            animation: fadeInUp 1s forwards 0.9s;
+            opacity: 0;
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0066ff, #00ccff);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(0, 102, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            border-color: #00ccff;
+            color: #00ccff;
+        }
+
+        .team-section {
+            padding: 8rem 2rem;
+            background: #080808;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            background: linear-gradient(135deg, #0066ff, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ccff, transparent);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+       .team-card {
+    background: #111;
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.card-link {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+
+        .team-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: #00ccff;
+            box-shadow: 0 20px 40px rgba(0, 204, 255, 0.15);
+        }
+
+        .member-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.2);
+        }
+
+        .member-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-name {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 0.75rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .member-info {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            font-size: 1.0rem;
+        }
+
+        .member-role {
+            color: #00ccff;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .problem-solved {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .problem-title {
+            font-weight: 700;
+            color: #00ccff;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .algorithms-used {
+            margin-top: 1.5rem;
+        }
+
+        .algorithms-list {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            list-style: none;
+        }
+
+        .algorithms-list li {
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .algorithms-list li:hover {
+            background: rgba(0, 204, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, rgba(0, 204, 255, 0) 70%);
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glow:nth-child(2) {
+            animation-delay: -10s;
+            background: radial-gradient(circle, rgba(0, 204, 255, 0.1) 0%, rgba(0, 102, 255, 0) 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 50px) scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="brand">
+            <div class="logo">G</div>
+            DAA PROJECT
+        </a>
+        <ul class="nav-items">
+            <li><a href="#hero" class="active">Home</a></li>
+            <li><a href="#team">Team</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="glow"></div>
+        <div class="glow"></div>
+        <div class="hero-content">
+            <p class="subtitle">Algorithmic Solutions</p>
+            <h1 class="title">&lt;/&gt; Advanced Algorithms for Efficient Water Management In Urban Areas</h1>
+            <p class="description">
+                Leveraging cutting-edge algorithms and data structures to revolutionize water distribution systems in urban areas. Our solutions optimize resource allocation, minimize wastage, and ensure equitable distribution.
+            </p>
+            <div class="buttons">
+               <button class="btn btn-primary" onclick="document.getElementById('team').scrollIntoView({behavior: 'smooth'})">Meet the Team & Algorithms</button>
+
+                <button class="btn btn-secondary">View Solutions</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section" id="team">
+        <h2 class="section-title">Our Team</h2>
+        <div class="team-grid">
+           <div class="team-card">
+    <a href="https://sites.google.com/kletech.ac.in/database-management-systems/learning-and-assignments/structured-enquiry?authuser=1" class="card-link">
+        <div class="member-img">
+            <img src="/api/placeholder/200/200" alt="img">
+        </div>
+        <h3 class="member-name">Mohammad Sadiq</h3>
+        <p class="member-info">Roll No: 221</p>
+        <p class="member-role">Computer Science(AI),3rd Sem</p>
+        <div class="problem-solved">
+            <h4 class="problem-title">Problem Solved</h4>
+            <p>Optimizing pipeline construction for minimal cost and maximum coverage</p>
+            <div class="algorithms-used">
+                <h4 class="problem-title">Algorithms Used</h4>
+                <ul class="algorithms-list">
+                    <li>Prim's Algorithm</li>
+                    <li>Kruskal's MST</li>
+                    <li>Union Find</li>
+                </ul>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="team-card">
+    <a href="YOUR_LINK_HERE" class="card-link">
+        <div class="member-img">
+            <img src="/api/placeholder/200/200" alt="img">
+        </div>
+        <h3 class="member-name">Mohammad Abdul Raqeeb</h3>
+        <p class="member-info">Roll No: 207</p>
+        <p class="member-role">Computer Science(AI),3rd Sem</p>
+        <div class="problem-solved">
+            <h4 class="problem-title">Problem Solved</h4>
+            <p>Finding Shortest Path for Water Flow</p>
+            <div class="algorithms-used">
+                <h4 class="problem-title">Algorithms Used</h4>
+                <ul class="algorithms-list">
+                    <li>Dijkstra's Algorithm</li>
+                </ul>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="team-card">
+    <a href="YOUR_LINK_HERE" class="card-link">
+        <div class="member-img">
+            <img src="/api/placeholder/200/200" alt="img">
+        </div>
+        <h3 class="member-name">Nahid Hussain Naro</h3>
+        <p class="member-info">Roll No: 228</p>
+        <p class="member-role">Computer Science(AI),3rd Sem</p>
+        <div class="problem-solved">
+            <h4 class="problem-title">Problem Solved</h4>
+            <p>Scheduling Water Tank Refills</p>
+            <div class="algorithms-used">
+                <h4 class="problem-title">Algorithms Used</h4>
+                <ul class="algorithms-list">
+                    <li>Insertion Sort</li>
+                </ul>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="team-card">
+    <a href="YOUR_LINK_HERE" class="card-link">
+        <div class="member-img">
+            <img src="/api/placeholder/200/200" alt="img">
+        </div>
+        <h3 class="member-name">Owaise Aminbhavi</h3>
+        <p class="member-info">Roll No: 265</p>
+        <p class="member-role">Computer Science(AI),3rd Sem</p>
+        <div class="problem-solved">
+            <h4 class="problem-title">Problem Solved</h4>
+            <p>Ranking Areas by Water Scarcity</p>
+            <div class="algorithms-used">
+                <h4 class="problem-title">Algorithms Used</h4>
+                <ul class="algorithms-list">
+                    <li>Merge Sort</li>
+                </ul>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="team-card">
+    <a href="YOUR_LINK_HERE" class="card-link">
+        <div class="member-img">
+            <img src="/api/placeholder/200/200" alt="img">
+        </div>
+        <h3 class="member-name">Vinay Chalgeri</h3>
+        <p class="member-info">Roll No: 205</p>
+        <p class="member-role">Computer Science(AI),3rd Sem</p>
+        <div class="problem-solved">
+            <h4 class="problem-title">Problem Solved</h4>
+            <p>Detecting Pipeline Errors Using String Matching</p>
+            <div class="algorithms-used">
+                <h4 class="problem-title">Algorithms Used</h4>
+                <ul class="algorithms-list">
+                    <li>String Matching Algorithm</li>
+                </ul>
+            </div>
+        </div>
+    </a>
+</div>
+
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Navigation highlighting
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-items a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - sectionHeight/3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
